@@ -1,7 +1,10 @@
 const express = require("express");
 const exphbs = require("express-handlebars");
 const methodOverride = require("method-override");
-// const bcrypt = require("bcrypt.js");
+const bcrypt = require("bcryptjs");
+const session = require("express-session");
+const passport = require("passport");
+const usePassport = require("./config/passport");
 const app = express();
 const PORT = 3000;
 const db = require("./models");
@@ -10,8 +13,16 @@ const User = db.User;
 
 app.engine("handlebars", exphbs.engine());
 app.set("view engine", "handlebars");
+app.use(
+  session({
+    secret: "ThisIsMySecret",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
+usePassport(app);
 
 app.get("/", (req, res) => {
   return Todo.findAll({
@@ -37,9 +48,13 @@ app.get("/users/login", (req, res) => {
   res.render("login");
 });
 
-app.post("/users/login", (req, res) => {
-  res.send("register");
-});
+app.post(
+  "/users/login",
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/users/login",
+  })
+);
 
 app.get("/users/register", (req, res) => {
   res.render("register");
