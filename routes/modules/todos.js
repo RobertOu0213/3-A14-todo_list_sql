@@ -20,11 +20,49 @@ router.post("/", (req, res) => {
     .catch((error) => console.log(error));
 });
 
-//detail list
+//render detail list
 router.get("/:id", (req, res) => {
+  const UserId = req.user.id;
   const id = req.params.id;
-  return Todo.findByPk(id)
+  return Todo.findOne({ where: { id, UserId } })
     .then((todo) => res.render("detail", { todo: todo.toJSON() }))
+    .catch((error) => console.log(error));
+});
+
+//render edit
+router.get("/:id/edit", (req, res) => {
+  const UserId = req.user.id;
+  const id = req.params.id;
+
+  return Todo.findOne({ where: { id, UserId } })
+    .then((todo) => res.render("edit", { todo: todo.toJSON() }))
+    .catch((error) => console.log(error));
+});
+
+//put edit
+
+router.put("/:id", (req, res) => {
+  const UserId = req.user.id;
+  const id = req.params.id;
+  const { name, isDone } = req.body;
+
+  Todo.findOne({ where: { UserId, id } })
+    .then((todo) => {
+      todo.name = name;
+      todo.isDone = isDone === "on";
+      return todo.save();
+    })
+    .then(() => res.redirect("/"))
+    .catch((error) => console.log(error));
+});
+
+//delete
+router.delete("/:id", (req, res) => {
+  const UserId = req.user.id;
+  const id = req.params.id;
+  return Todo.findOne({ id, UserId })
+    .then((todo) => todo.destroy())
+    .then(() => res.redirect("/"))
     .catch((error) => console.log(error));
 });
 
