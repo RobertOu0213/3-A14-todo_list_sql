@@ -20,20 +20,23 @@
 
 2. 將專案 clone 到本地
 ```
-
+https://github.com/RobertOu0213/3-A14-todo_list_sql
 ```
 
 3. 在本地開啟之後，透過終端機進入資料夾，輸入：
 
 ```
 npm install
+
 ```
 
 4. 依據.env.example, 請自行帶入以下參數
 
 ```
 
-
+FACEBOOK_ID=xxxxx
+FACEBOOK_SECRET=xxxxx
+FACEBOOK_CALLBACK=xxxx
 
 
 ```
@@ -53,7 +56,8 @@ Listening on http://localhost:3000
 # 7. =重要= 請輸入種子資料
 
 ```
-npx sequelize db:seed
+npx sequelize db:seed:all
+
 ```
 
  ### 種子資料使用者email及密碼如下
